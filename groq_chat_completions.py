@@ -1,8 +1,6 @@
 from dotenv import load_dotenv
 import os
-
 load_dotenv()
-
 from groq import Groq
 
 client = Groq(
