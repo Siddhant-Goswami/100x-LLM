@@ -5,37 +5,25 @@ import openai
 import json
 import requests
 from dotenv import load_dotenv
+import yfinance as yf
 
 load_dotenv()
 
 # set openai api key
 openai.api_key = os.environ['OPENAI_API_KEY']
-OPENWEATHER_API_KEY = os.environ['OPENWEATHER_API_KEY']
 
 
 # ### Define Dummy Function
 
-# Defines a dummy function to get the current weather
-def get_current_weather(location):
-    """Get the current weather in a given location"""
+# Defines a dummy function to get the current stock price
+def get_current_stock_price(stock_symbol):
+    """Get the current stock price for a given stock symbol"""
 
-    base_url = "http://api.openweathermap.org/data/2.5/weather?"
-    complete_url = f"{base_url}appid={OPENWEATHER_API_KEY}&q={location}"
+    stock_data = yf.Ticker(stock_symbol).history(period="1d")
 
-    response = requests.get(complete_url)
-
-    if response.status_code == 200:
-        data = response.json()
-        weather = data['weather'][0]['main']
-        temperature = data['main']['temp'] - 273.15  # Convert Kelvin to Celsius
-        return json.dumps({
-            "city": location,
-            "weather": weather,
-            "temperature": round(temperature, 2)
-        })
-    else:
-        return json.dumps({"city": location, "weather": "Data Fetch Error", "temperature": "N/A"})
-
+    # Print the stock's current price
+    print(f"Current Price of {stock_symbol}: ", stock_data['Close'].iloc[-1])
+    return json.dumps(stock_data['Close'].iloc[-1])
 
 
 # ### Define Functions
@@ -51,17 +39,17 @@ tools = [
     {
         "type": "function",
         "function": {
-            "name": "get_current_weather",
-            "description": "Get the current weather in a given location",
+            "name": "get_current_stock_price",
+            "description": "Get the current stock price for a given stock symbol",
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "location": {
+                    "stock_symbol": {
                         "type": "string",
-                        "description": "The city and state, e.g. San Francisco, CA",
+                        "description": "The stock symbol you are interested in, e.g. RELIANCE",
                     },
                 },
-                "required": ["location"],
+                "required": ["stock_symbol"],
             },
         },   
     }
@@ -73,7 +61,7 @@ response = openai.chat.completions.create(
     messages=[
     {
         "role": "user",
-        "content": "What is the weather like in Bengaluru?"
+        "content": "What is the price of Techm.ns?"
     }],
     temperature=0,
     max_tokens=300,
@@ -93,6 +81,6 @@ args = json.loads(openai_response.tool_calls[0].function.arguments)
 print(args)
 
 print("output")
-print(get_current_weather(**args))
+print(get_current_stock_price(**args))
 
-# Task: Put this into another call and return the response
+#  Put this into another LLM call and return the response in text format
