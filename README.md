@@ -1,11 +1,13 @@
-# Project Documentation
-
-## Overview
+## Project Overview
 This project has all the code discussed in the 100x LLM lectures
 
 ## Installation Guide
 
-## Creating a Virtual Environment (using venv, you can use conda or other virtual env packages as well)
+### Prerequisites
+- Python 3.8+
+- pip
+
+### Creating a Virtual Environment
 
 1. Install `virtualenv` if not already installed:
 
@@ -19,9 +21,6 @@ This project has all the code discussed in the 100x LLM lectures
    source venv/bin/activate
 ```
 
-### Prerequisites
-- Python 3.8+
-- pip
 
 ### Setup
 1. Clone the repository:
