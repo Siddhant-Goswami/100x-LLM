@@ -1,8 +1,11 @@
-# Installation Guide and File Overview
+# Project Documentation
 
-## Creating a Virtual Environment
+## Overview
+This project has all the code discussed in the 100x LLM lectures
 
-### Steps to Create a New Virtual Environment (using venv, you can use conda or other virtual env packages as well)
+## Installation Guide
+
+## Creating a Virtual Environment (using venv, you can use conda or other virtual env packages as well)
 
 1. Install `virtualenv` if not already installed:
 
@@ -16,30 +19,60 @@
    source venv/bin/activate
 ```
 
-## Installation Guide
-1. Install the required packages listed in `requirements.txt`.
-2. Copy the `.env_example` file and rename it to `.env`.
-2. Add your API keys in the `.env` file.
+### Prerequisites
+- Python 3.8+
+- pip
 
-## File Overview
+### Setup
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd <project-directory>
+   ```
+3. Install required packages:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Set up environment variables:
+   - Copy `.env_example` to `.env`.
+   - Add necessary API keys and configuration settings to `.env`.
 
-### `GPT_function_call.py`
-- Calls OpenAI API to get the current weather using a defined function.
-- Demonstrates how to define functions for use in the request.
-- Uses the GPT-3.5-turbo model for chat completions.
+## Usage
 
-### `groq_function_call.py`
-- Calls Groq API to get the current weather using a defined function.
-- Demonstrates how to define functions for the request.
-- Utilizes the mixtral-8x7b-32768 model for chat completions.
+### Chat Completions
+- **OpenAI Chat Completions**: Utilizes OpenAI's GPT models for generating chat completions.
+- **Groq Chat Completions**: Uses Groq's API for chat completions.
+- **Hugging Face Chat Completions**: Demonstrates chat completions using Hugging Face models.
 
-### `groq_chat_completions.py`
-- Utilizes Groq API for chat completions.
-- Demonstrates a basic chat completion request using the mixtral-8x7b-32768 model.
+### Function Calling
+- **Weather Information**: Fetches current weather using OpenAI and Groq APIs.
+- **Stock Prices**: Retrieves current stock prices using OpenAI's API.
+
+### Image Classification
+- Utilizes Hugging Face's Inference API to classify images provided via URLs.
+
+### Data Retrieval
+- Custom API built with FastAPI to perform operations like adding numbers and querying data.
+
+## File Structure
+- `chat_completions/`: Contains scripts for chat completions using different APIs.
+- `function_calling/`: Scripts for calling functions like fetching weather and stock prices.
+- `huggingface/`: Examples of using Hugging Face's Inference API for tasks like image classification.
+- `api/`: Contains FastAPI applications for custom functionalities.
+- `data/`: Sample data files used in the project.
 
 ## Additional Notes
-- Ensure API keys are set up correctly for OpenAI and Groq in the respective files.
-- Follow the code comments for guidance on function definitions and API usage.
+- Ensure that all environment variables are correctly set in the `.env` file before running the scripts.
+- Refer to the respective API documentation for detailed usage and limitations:
+  - [OpenAI Documentation](https://platform.openai.com/docs/guides/function-calling)
+  - [Groq Documentation](https://console.groq.com/docs/quickstart)
+  - [Hugging Face Models](https://huggingface.co/models)
 
-Groq docs: https://console.groq.com/docs/quickstart
-OpenAI docs: https://platform.openai.com/docs/guides/function-calling
+## Contributing
+Contributions to the project are welcome. Please ensure to follow the coding standards and submit pull requests for any new features or bug fixes.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
