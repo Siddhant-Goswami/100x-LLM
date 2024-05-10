@@ -39,7 +39,7 @@ This project has all the code discussed in the 100x LLM lectures
    - Copy `.env_example` to `.env`.
    - Add necessary API keys and configuration settings to `.env`.
 
-## Usage
+## Topics
 
 ### Chat Completions
 - **OpenAI Chat Completions**: Utilizes OpenAI's GPT models for generating chat completions.
