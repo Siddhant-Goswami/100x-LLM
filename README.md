@@ -69,9 +69,3 @@ This project has all the code discussed in the 100x LLM lectures
   - [OpenAI Documentation](https://platform.openai.com/docs/guides/function-calling)
   - [Groq Documentation](https://console.groq.com/docs/quickstart)
   - [Hugging Face Models](https://huggingface.co/models)
-
-## Contributing
-Contributions to the project are welcome. Please ensure to follow the coding standards and submit pull requests for any new features or bug fixes.
-
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
