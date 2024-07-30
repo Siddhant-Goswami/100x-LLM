@@ -1,9 +1,6 @@
 ## Project Overview
 This project has all the code discussed in the 100x LLM lectures
 
-This branch has code for setting up the FastAPI application and the Gradio-based chatbot.
-
-```markdown
 # Groq Chatbot and FastAPI Example
 
 This repository contains two main components:
