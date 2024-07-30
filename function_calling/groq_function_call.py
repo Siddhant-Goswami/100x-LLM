@@ -16,12 +16,11 @@ client = Groq(
 # ### Define Dummy Function
 
 # Defines a dummy function to get the current weather
-def get_current_weather(location, unit="fahrenheit"):
+def get_current_weather(location):
     """Get the current weather in a given location"""
     weather = {
         "location": location,
         "temperature": "50",
-        "unit": unit,
     }
 
 
@@ -49,10 +48,7 @@ tools = [
                     "location": {
                         "type": "string",
                         "description": "The city and state, e.g. San Francisco, CA",
-                    },
-                    "unit": {
-                        "type": "string", 
-                        "enum": ["celsius", "fahrenheit"]},
+                    }
                 },
                 "required": ["location"],
             },
@@ -63,11 +59,11 @@ tools = [
 
 
 response = client.chat.completions.create(
-    model="mixtral-8x7b-32768",
+    model="llama3-70b-8192",
     messages=[
         {
             "role": "user",
-            "content": "What is the weather like in London?",
+            "content": "What is the weather like in Bengaluru?",
         }
     ],
     temperature=0,
