@@ -1,6 +1,3 @@
-## Project Overview
-This project has all the code discussed in the 100x LLM lectures
-
 # Groq Chatbot and FastAPI Example
 
 This repository contains two main components:
