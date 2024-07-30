@@ -33,8 +33,8 @@ response = requests.post(url, headers=headers, json=body)
 # Check if the request was successful
 if response.status_code == 200:
     # Print the full response from Groq
-    # print("Response from Groq:", response.json())
-    # print('\n')
+    print("Response from Groq:", response.json())
+    print('\n')
     # Print the content of the first message choice
     print(response.json()['choices'][0]['message']['content'])
 else:

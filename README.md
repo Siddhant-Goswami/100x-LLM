@@ -1,71 +1,91 @@
 ## Project Overview
 This project has all the code discussed in the 100x LLM lectures
 
-## Installation Guide
+This branch has code for setting up the FastAPI application and the Gradio-based chatbot.
+
+```markdown
+# Groq Chatbot and FastAPI Example
+
+This repository contains two main components:
+1. A FastAPI application that provides a simple addition API.
+2. A Gradio-based chatbot interface powered by Groq.
+
+## Setup Instructions
 
 ### Prerequisites
-- Python 3.8+
-- pip
 
-### Creating a Virtual Environment
+- Python 3.7 or higher
+- An API key for Groq (set as an environment variable `GROQ_API_KEY`)
 
-1. Install `virtualenv` if not already installed:
+### Installation
 
-```python
-   pip install virtualenv
-```
-2. Create a new virtual environment:
+1. **Clone the repository:**
+    ```sh
+    git clone https://github.com/yourusername/your-repo.git
+    cd your-repo
+    ```
 
-```python
-   virtualenv venv
-   source venv/bin/activate
-```
+2. **Create a virtual environment:**
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+
+3. **Install the required libraries:**
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+### Running the FastAPI Application
+
+1. **Navigate to the `api` directory:**
+    ```sh
+    cd api
+    ```
+
+2. **Run the FastAPI server:**
+    ```sh
+    uvicorn api:app --reload
+    ```
+
+   The API will be available at `http://127.0.0.1:8000`.
+
+### Running the Gradio Chatbot
+
+1. **Navigate to the `api` directory:**
+    ```sh
+    cd api
+    ```
+
+2. **Run the Gradio interface:**
+    ```sh
+    python groq_sdk_chatbot.py
+    ```
+
+   The Gradio interface will launch and provide a URL to access the chatbot.
+
+## Usage
+
+### FastAPI Addition API
+
+- **Endpoint:** `POST /add`
+- **Request Body:**
+    ```json
+    {
+        "x": 1,
+        "y": 2
+    }
+    ```
+- **Response:**
+    ```json
+    {
+        "result": 3
+    }
+    ```
+
+### Gradio Chatbot
+
+- Open the provided URL in your browser.
+- Interact with the Groq-powered chatbot by typing your questions.
 
 
-### Setup
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd <project-directory>
-   ```
-3. Install required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Set up environment variables:
-   - Copy `.env_example` to `.env`.
-   - Add necessary API keys and configuration settings to `.env`.
-
-## Topics
-
-### Chat Completions
-- **OpenAI Chat Completions**: Utilizes OpenAI's GPT models for generating chat completions.
-- **Groq Chat Completions**: Uses Groq's API for chat completions.
-- **Hugging Face Chat Completions**: Demonstrates chat completions using Hugging Face models.
-
-### Function Calling
-- **Weather Information**: Fetches current weather using OpenAI and Groq APIs.
-- **Stock Prices**: Retrieves current stock prices using OpenAI's API.
-
-### Image Classification
-- Utilizes Hugging Face's Inference API to classify images provided via URLs.
-
-### Data Retrieval
-- Custom API built with FastAPI to perform operations like adding numbers and querying data.
-
-## File Structure
-- `chat_completions/`: Contains scripts for chat completions using different APIs.
-- `function_calling/`: Scripts for calling functions like fetching weather and stock prices.
-- `huggingface/`: Examples of using Hugging Face's Inference API for tasks like image classification.
-- `api/`: Contains FastAPI applications for custom functionalities.
-- `data/`: Sample data files used in the project.
-
-## Additional Notes
-- Ensure that all environment variables are correctly set in the `.env` file before running the scripts.
-- Refer to the respective API documentation for detailed usage and limitations:
-  - [OpenAI Documentation](https://platform.openai.com/docs/guides/function-calling)
-  - [Groq Documentation](https://console.groq.com/docs/quickstart)
-  - [Hugging Face Models](https://huggingface.co/models)
