@@ -3,3 +3,4 @@ pydantic
 uvicorn
 gradio
 groq
+streamlit
