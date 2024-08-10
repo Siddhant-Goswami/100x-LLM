@@ -4,3 +4,4 @@ uvicorn
 gradio
 groq
 streamlit
+notion-client

@@ -1,13 +1,11 @@
 import os
-from dotenv import load_dotenv
-from notion_client import Client 
+from notion_client import Client
+import streamlit as st
 
+# 5. Authenticate and Connect to Notion (use notion integration key)
+notion = Client(auth=os.environ.get("NOTION_API_KEY"))
 
-load_dotenv()
-
-notion = Client(auth=os.getenv("NOTION_API_KEY"))
-
-page_id = '67dd09be5b3b44d694996a75c07ecc26'
+page_id = '232b178364ed4fa4b15764dbc0d1e9dd'
 
 response = notion.pages.retrieve(page_id=page_id)
 
@@ -15,23 +13,10 @@ response_body = notion.blocks.children.list(
     block_id=page_id
 )
 
-print(response_body)
+st.title(response['properties']['title']['title'][0]['plain_text'])
 
+for block in response_body['results']:
+    if block['type'] == 'paragraph':
+        for text in block['paragraph']['rich_text']:
+            st.write(text['plain_text'])
 
-
-
-
-
-
-
-
-
-
-
-
-
-# import streamlit as st
-
-# st.title(response['properties']['title']['title'][0]['plain_text'])
-
-# st.write(response_body['results'][1]['paragraph']['rich_text'][0]['plain_text'])
