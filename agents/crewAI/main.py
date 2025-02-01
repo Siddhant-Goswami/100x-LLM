@@ -7,9 +7,12 @@ from crewai import Agent, Task, Crew, Process
 load_dotenv()
 
 llm = ChatOpenAI(
-    model="llama3:latest",
-    base_url="http://localhost:11434/v1"
+    model="llama3:latest", 
+    base_url="http://localhost:11434/v1",
+    api_key="ollama",  # Add this line
 )
+
+
 
 search_tool = SerperDevTool()
 
@@ -57,7 +60,7 @@ task2 = Task(
 crew = Crew(
   agents=[researcher, writer],
   tasks=[task1, task2],
-  verbose=2, # You can set it to 1 or 2 to different logging levels
+  verbose=True,  # Changed from 2 to True
 )
 
 # Get your crew to work!

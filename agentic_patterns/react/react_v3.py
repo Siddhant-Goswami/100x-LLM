@@ -5,6 +5,23 @@ from serpapi import GoogleSearch
 
 serpapi_key = os.environ.get("SERPER_API_KEY")
 
+def react_agent(question, max_iteration=5):
+    
+    
+    tasks = manager_agent(question)
+
+    research_task, analyst_task, writer_task = tasks 
+
+    research_report = research_agent(research_task)
+
+    top_3_stock_analysis = analyst_agent(analyst_task, research_report)
+
+    final_report = writer_agent(top_3_stock_analysis, research_report)
+
+
+
+
+
 def react_agent(question, max_iterations=5):
     """
     Main function that implements the React Agent loop.
@@ -159,6 +176,20 @@ def web_search(query):
     else:
         return "No results found."
 
+
+
+
+
+
+
+
 question = "What is the population of India?"
+
+
 answer = react_agent(question)
+
+
+
+
+
 print(f"Final Answer: {answer}")
