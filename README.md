@@ -1,6 +1,6 @@
 # 100x Applied AI - Code Snippets
 
-This repository contains code snippets and examples from the 100x Applied AI cohort lectures. It demonstrates various practical implementations of LLM-based applications and patterns.
+This repository contains code snippets and examples from the 100x Applied AI cohort lectures.
 
 ## Project Overview
 
@@ -103,7 +103,3 @@ Feel free to contribute by:
 ## License
 
 This project is licensed under the terms specified in the LICENSE file.
-
-## Acknowledgments
-
-This codebase is part of the 100x Applied AI cohort curriculum, demonstrating practical implementations of various LLM concepts and patterns.
