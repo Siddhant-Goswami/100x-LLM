@@ -1,5 +1,16 @@
+# 100x Applied AI - Code Snippets
+
+This repository contains code snippets and examples from the 100x Applied AI cohort lectures. It demonstrates various practical implementations of LLM-based applications and patterns.
+
 ## Project Overview
-This project has all the code discussed in the 100x LLM lectures
+
+The repository includes implementations of:
+- LLM Workflows and Patterns
+- RAG (Retrieval Augmented Generation)
+- Agentic Patterns
+- Chat Completions with various providers
+- Function Calling
+- And more...
 
 ## Installation Guide
 
@@ -7,65 +18,92 @@ This project has all the code discussed in the 100x LLM lectures
 - Python 3.8+
 - pip
 
-### Creating a Virtual Environment
-
-1. Install `virtualenv` if not already installed:
-
-```python
-   pip install virtualenv
-```
-2. Create a new virtual environment:
-
-```python
-   virtualenv venv
-   source venv/bin/activate
-```
-
-
 ### Setup
 1. Clone the repository:
    ```bash
    git clone <repository-url>
    ```
-2. Navigate to the project directory:
+2. Create and activate a virtual environment:
    ```bash
-   cd <project-directory>
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
-3. Install required packages:
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-4. Set up environment variables:
-   - Copy `.env_example` to `.env`.
-   - Add necessary API keys and configuration settings to `.env`.
+4. Environment setup:
+   - Copy `.env_example` to `.env`
+   - Add your API keys and configurations
 
-## Topics
+## Repository Structure
 
-### Chat Completions
-- **OpenAI Chat Completions**: Utilizes OpenAI's GPT models for generating chat completions.
-- **Groq Chat Completions**: Uses Groq's API for chat completions.
-- **Hugging Face Chat Completions**: Demonstrates chat completions using Hugging Face models.
+### Core Components
 
-### Function Calling
-- **Weather Information**: Fetches current weather using OpenAI and Groq APIs.
-- **Stock Prices**: Retrieves current stock prices using OpenAI's API.
+#### LLM Workflows (`llm_workflows/`)
+- Prompt Chaining and Orchestration
+- Router-based Workflows
+- Parallel Processing Patterns
+- Code Review Automation
+- Evaluation and Optimization
 
-### Image Classification
-- Utilizes Hugging Face's Inference API to classify images provided via URLs.
+#### RAG Implementations (`rag/` & `rag2/`)
+- Different approaches to Retrieval Augmented Generation
+- Integration examples
 
-### Data Retrieval
-- Custom API built with FastAPI to perform operations like adding numbers and querying data.
+#### Agentic Patterns (`agentic_patterns/`)
+- Implementation of various AI agent patterns
+- Agent orchestration examples
 
-## File Structure
-- `chat_completions/`: Contains scripts for chat completions using different APIs.
-- `function_calling/`: Scripts for calling functions like fetching weather and stock prices.
-- `huggingface/`: Examples of using Hugging Face's Inference API for tasks like image classification.
-- `api/`: Contains FastAPI applications for custom functionalities.
-- `data/`: Sample data files used in the project.
+#### Chat Completions (`chat_completions/`)
+- OpenAI integration
+- Groq implementation
+- Other LLM providers
 
-## Additional Notes
-- Ensure that all environment variables are correctly set in the `.env` file before running the scripts.
-- Refer to the respective API documentation for detailed usage and limitations:
-  - [OpenAI Documentation](https://platform.openai.com/docs/guides/function-calling)
-  - [Groq Documentation](https://console.groq.com/docs/quickstart)
-  - [Hugging Face Models](https://huggingface.co/models)
+#### Function Calling (`function_calling/`)
+- Examples of function calling with LLMs
+- Real-world use cases
+
+#### Hugging Face Integration (`huggingface/`)
+- Model usage examples
+- Inference API implementations
+
+#### Additional Components
+- `agents/`: Various agent implementations
+- `presentation_generator/`: Automated presentation creation
+- `notion_data_integration/`: Notion API integration examples
+- `api/`: FastAPI-based endpoints
+- `auth/`: Authentication implementations
+- `langchain/`: LangChain usage examples
+
+## Usage
+
+Each directory contains specific examples and implementations. Refer to individual README files within each directory for detailed usage instructions.
+
+## Additional Resources
+
+- Check the `prompts/` directory for various prompt engineering examples
+- See `llm_workflows/README.md` for detailed workflow patterns
+- Explore individual directories for specific implementation details
+
+## Environment Variables
+
+Required environment variables (add to `.env`):
+- OpenAI API keys
+- Hugging Face API tokens
+- Other provider credentials as needed
+
+## Contributing
+
+Feel free to contribute by:
+1. Forking the repository
+2. Creating a feature branch
+3. Submitting a pull request
+
+## License
+
+This project is licensed under the terms specified in the LICENSE file.
+
+## Acknowledgments
+
+This codebase is part of the 100x Applied AI cohort curriculum, demonstrating practical implementations of various LLM concepts and patterns.
