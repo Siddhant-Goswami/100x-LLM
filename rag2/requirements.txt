@@ -1,0 +1,5 @@
+sentence-transformers
+Wikipedia-API
+python-dotenv
+openai
+numpy

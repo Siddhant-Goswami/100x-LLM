@@ -1,4 +1,3 @@
-
 from llama_parse import LlamaParse  # pip install llama-parse
 from llama_index.core import SimpleDirectoryReader  # pip install llama-index
 from llama_index.core.node_parser import MarkdownElementNodeParser
@@ -6,14 +5,27 @@ from llama_index.llms.openai import OpenAI
 from llama_index.embeddings.openai import OpenAIEmbedding
 from llama_index.core import VectorStoreIndex
 from llama_index.core import Settings
-
 from dotenv import load_dotenv
+import os
+
 load_dotenv()
 
+# Create data directory if it doesn't exist
+data_dir = "./data"
+if not os.path.exists(data_dir):
+    os.makedirs(data_dir)
+    print(f"Created directory: {data_dir}")
+    print("Please add your PDF files to the data directory before running this script")
+    exit(0)
+
+# Check if directory is empty
+if len(os.listdir(data_dir)) == 0:
+    print("The data directory is empty. Please add PDF files before running this script")
+    exit(0)
 
 # Embedding model
 embed_model=OpenAIEmbedding(model="text-embedding-3-small")
-llm = OpenAI(model="gpt-3.5-turbo-0125")
+llm = OpenAI(model="gpt-4o-mini")
 Settings.llm = llm
 
 
@@ -28,7 +40,7 @@ documents = reader.load_data()
 # print(documents[0].text[0:1000])
 
 # Use MENP to convert the markdown into a set of table and text node.
-node_parser = MarkdownElementNodeParser(llm=OpenAI(model="gpt-3.5-turbo-0125"), num_workers=8)
+node_parser = MarkdownElementNodeParser(llm=OpenAI(model="gpt-4o-mini"), num_workers=8)
 
 nodes = node_parser.get_nodes_from_documents(documents)
 
