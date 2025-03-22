@@ -5,23 +5,6 @@ from serpapi import GoogleSearch
 
 serpapi_key = os.environ.get("SERPER_API_KEY")
 
-def react_agent(question, max_iteration=5):
-    
-    
-    tasks = manager_agent(question)
-
-    research_task, analyst_task, writer_task = tasks 
-
-    research_report = research_agent(research_task)
-
-    top_3_stock_analysis = analyst_agent(analyst_task, research_report)
-
-    final_report = writer_agent(top_3_stock_analysis, research_report)
-
-
-
-
-
 def react_agent(question, max_iterations=5):
     """
     Main function that implements the React Agent loop.
@@ -54,10 +37,7 @@ def react_agent(question, max_iterations=5):
         if action == "Final Answer":
             return action_input
 
-    # If no final answer is found within max_iterations, return this message
-    return "I couldn't find a definitive answer within the given number of iterations."
-
-
+    return "This is best I could do in the given number of iterations."
 
 def generate_thought_and_action(question, context):
     """
@@ -112,7 +92,7 @@ def generate_thought_and_action(question, context):
 
     response = client.chat.completions.create(
         messages=[{"role": "user", "content": prompt}],
-        model="llama3-groq-70b-8192-tool-use-preview",
+        model="deepseek-r1-distill-llama-70b",
         max_tokens=150,
         tools=tools,
         tool_choice="auto"
@@ -153,10 +133,10 @@ def perform_action(action, action_input):
 
 def web_search(query):
     """
-    Performs a web search using the SerpAPI.
+    Performs a web search using SerpAPI.
     
     :param query: The search query
-    :return: A string containing the top 3 search results
+    :return: A string containing the top search results
     """
     # Set up the parameters for the SerpAPI search
     params = {
@@ -176,20 +156,6 @@ def web_search(query):
     else:
         return "No results found."
 
-
-
-
-
-
-
-
 question = "What is the population of India?"
-
-
 answer = react_agent(question)
-
-
-
-
-
 print(f"Final Answer: {answer}")

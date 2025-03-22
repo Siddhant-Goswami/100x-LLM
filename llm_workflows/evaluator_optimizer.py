@@ -7,7 +7,7 @@ async def evaluator_optimizer_workflow(writing_prompt: str, max_iterations: int 
     print(f"Initial prompt: {writing_prompt}\n")
     
     # Initial draft by optimizer
-    current_draft = await get_llm_response(
+    current_draft = get_llm_response(
         f"Write a response to: {writing_prompt}"
     )
     
@@ -18,7 +18,7 @@ async def evaluator_optimizer_workflow(writing_prompt: str, max_iterations: int 
         print(f"\nIteration {i + 1}:")
         
         # Evaluator reviews the draft
-        evaluation = await get_llm_response(
+        evaluation = get_llm_response(
             f"""Evaluate this text based on:
             1. Clarity
             2. Completeness
@@ -32,7 +32,7 @@ async def evaluator_optimizer_workflow(writing_prompt: str, max_iterations: int 
         print(evaluation)
         
         # Check if quality is satisfactory
-        quality_check = await get_llm_response(
+        quality_check = get_llm_response(
             f"Based on this evaluation, should the text be improved further? Answer only YES or NO: {evaluation}"
         )
         
@@ -42,7 +42,7 @@ async def evaluator_optimizer_workflow(writing_prompt: str, max_iterations: int 
         
         print("\nImproving based on feedback...")
         # Optimizer improves based on feedback
-        current_draft = await get_llm_response(
+        current_draft = get_llm_response(
             f"""Improve this text based on the following feedback:
             Original: {current_draft}
             Feedback: {evaluation}"""
@@ -56,7 +56,7 @@ async def evaluator_optimizer_workflow(writing_prompt: str, max_iterations: int 
 # Example usage
 async def main():
     # Example writing prompt
-    prompt = "Explain quantum computing to a high school student"
+    prompt = "What is ReAct Agent?"
     
     # Run the evaluator-optimizer workflow
     final_draft, iterations, final_evaluation = await evaluator_optimizer_workflow(prompt)

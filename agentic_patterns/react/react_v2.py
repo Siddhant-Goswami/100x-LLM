@@ -4,8 +4,7 @@ from groq import Groq
 
 def react_agent(question, max_iterations=5):
     """
-    Main function that implements the React Agent loop.
-    It iterates through thinking, acting, and observing until it reaches a final answer or max iterations.
+    ReAct agent using an LLM for thought generation.
     
     :param question: The input question to be answered
     :param max_iterations: Maximum number of iterations to prevent infinite loops
@@ -13,7 +12,7 @@ def react_agent(question, max_iterations=5):
     """
     context = ""
     for i in range(max_iterations):
-        # Generate a thought and decide on an action
+        # Generate a thought and decide on an action using LLM
         thought, action, action_input = generate_thought_and_action(question, context)
         
         # Print the current iteration's details
@@ -28,23 +27,20 @@ def react_agent(question, max_iterations=5):
         print("---")
 
         # Update the context with the current iteration's information
-        context = context + f"\nThought: {thought}\nAction: {action}\nAction Input: {action_input}\nObservation: {observation}"
+        context += f"\nThought: {thought}\nAction: {action}\nAction Input: {action_input}\nObservation: {observation}"
 
         # If a final answer is reached, return it
         if action == "Final Answer":
             return action_input
 
-    # If no final answer is found within max_iterations, return this message
-    return "I couldn't find a definitive answer within the given number of iterations."
-
-
+    return "This is best I could do in the given number of iterations."
 
 def generate_thought_and_action(question, context):
     """
-    Generates a thought and decides on an action using the Groq API.
+    Uses an LLM to generate thoughts and actions.
     
     :param question: The input question
-    :param context: The current context of the conversation
+    :param context: Current context of the conversation
     :return: thought, action, action_input
     """
     # Construct the prompt for the AI model
@@ -93,7 +89,7 @@ def generate_thought_and_action(question, context):
 
     response = client.chat.completions.create(
         messages=[{"role": "user", "content": prompt}],
-        model="llama3-groq-70b-8192-tool-use-preview",
+        model="deepseek-r1-distill-llama-70b",
         max_tokens=150,
         tools=tools,
         tool_choice="auto"
@@ -119,22 +115,18 @@ def generate_thought_and_action(question, context):
 
 def perform_action(action, action_input):
     """
-    Executes the chosen action (either search or final answer).
+    Simplified action execution (without real web search yet).
     
     :param action: The action to perform ('search' or 'Final Answer')
-    :param action_input: The input for the action (search query or final answer)
-    :return: The result of the action (search results or the final answer)
+    :param action_input: The input for the action
+    :return: The result of the action
     """
     if action == "search":
-        return web_search(action_input)
+        return f"Mock search results for: {action_input}"
     elif action == "Final Answer":
         return action_input
     else:
         return f"Invalid action: {action}. Performing a search instead."
-
-def web_search(action_input):
-    # do the web search using serp api with given action_input
-    return "Search results"
 
 question = "What is the population of India?"
 answer = react_agent(question)
