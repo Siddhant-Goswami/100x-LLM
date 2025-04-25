@@ -1,8 +1,11 @@
 Convert this into a web based slide deck using reveal.js.
 
 Use the following brand colour and logo.
+
 Primary colour: #EE4822
+
 Theme: Light
+
 Logo: https://media.licdn.com/dms/image/v2/D560BAQFeaNrDEATcKQ/company-logo_200_200/company-logo_200_200/0/1709465010800/100xengineers_logo?e=2147483647&v=beta&t=qKncqAfB_j9ckDOxOx1eN9EEPocLTbNqliLnAU3sP6c
 
 Slide Content: Vibe Coding with Gemini Canvas
