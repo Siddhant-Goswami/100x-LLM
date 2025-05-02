@@ -52,3 +52,6 @@ htmlcov/
 llm-100x
 llm
 autogen_env
+
+credentials.json
+token.pickle
