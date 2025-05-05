@@ -1,0 +1,3 @@
+"""
+AI CRM package initialization.
+""" 
