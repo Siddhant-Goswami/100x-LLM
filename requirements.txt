@@ -21,7 +21,7 @@ distro==1.9.0
 dnspython==2.6.1
 email_validator==2.1.1
 evaluate==0.4.2
-fastapi==0.111.0
+fastapi==0.104.1
 fastapi-cli==0.0.3
 filelock==3.13.4
 frozendict==2.4.2
@@ -30,7 +30,7 @@ fsspec==2024.3.1
 gitdb==4.0.11
 GitPython==3.1.43
 greenlet==3.0.3
-groq==0.4.2
+groq==0.4.0
 h11==0.14.0
 html5lib==1.1
 httpcore==1.0.5
@@ -83,7 +83,7 @@ protobuf==4.25.3
 psutil==5.9.8
 pyarrow==16.0.0
 pyarrow-hotfix==0.6
-pydantic==2.7.1
+pydantic==2.4.2
 pydantic_core==2.18.2
 pydeck==0.9.0b1
 Pygments==2.17.2

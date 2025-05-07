@@ -1,105 +1,109 @@
-# 100x Applied AI - Code Snippets
+# AI-CRM: Lead Qualification System
 
-This repository contains code snippets and examples from the 100x Applied AI cohort lectures.
+An AI-powered CRM system that automatically qualifies sales leads based on multiple factors.
 
-## Project Overview
+## Project Structure
 
-The repository includes implementations of:
-- LLM Workflows and Patterns
-- RAG (Retrieval Augmented Generation)
-- Agentic Patterns
-- Chat Completions with various providers
-- Function Calling
-- And more...
+The project follows a clean architecture with separation of concerns:
 
-## Installation Guide
+```
+ai-crm/
+├── ai_crm/                # Backend package
+│   ├── api/               # FastAPI routers
+│   ├── models.py          # Pydantic domain models
+│   ├── repository/        # CSV data access layer
+│   ├── services/          # Business logic (qualification)
+│   └── main.py            # FastAPI application
+│
+└── frontend/              # Streamlit frontend
+    ├── components/        # Reusable UI components
+    ├── api.py             # Backend API client
+    └── streamlit_app.py   # Main Streamlit application
+```
+
+## Technology Stack
+
+- **Backend**: FastAPI
+- **Frontend**: Streamlit
+- **Data Store**: CSV file
+- **AI Provider**: Groq (LLaMA model for lead qualification)
+
+## Key Features
+
+- Thread-safe CSV database with proper locking
+- Separation of concerns (repository, services, API, UI)
+- Async API and API client for non-blocking I/O
+- Typed data models with Pydantic
+- Environment-driven configuration
+- Modular UI components in Streamlit
+- REST API with proper HTTP semantics
+
+## Getting Started
 
 ### Prerequisites
-- Python 3.8+
-- pip
+
+- Python 3.10+
+- A Groq API key (for AI-powered qualification)
 
 ### Setup
+
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/ai-crm.git
+   cd ai-crm
    ```
-2. Create and activate a virtual environment:
+
+2. Set up environment variables:
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   echo "GROQ_API_KEY=your_groq_api_key" > .env
    ```
-3. Install dependencies:
+
+3. Install backend dependencies:
    ```bash
+   cd ai_crm
    pip install -r requirements.txt
    ```
-4. Environment setup:
-   - Copy `.env_example` to `.env`
-   - Add your API keys and configurations
 
-## Repository Structure
+4. Install frontend dependencies:
+   ```bash
+   cd ../frontend
+   pip install -r requirements.txt
+   ```
 
-### Core Components
+### Running the Application
 
-#### LLM Workflows (`llm_workflows/`)
-- Prompt Chaining and Orchestration
-- Router-based Workflows
-- Parallel Processing Patterns
-- Code Review Automation
-- Evaluation and Optimization
+1. Start the backend server:
+   ```bash
+   cd ai_crm
+   uvicorn ai_crm.main:app --reload
+   ```
 
-#### RAG Implementations (`rag/` & `rag2/`)
-- Different approaches to Retrieval Augmented Generation
-- Integration examples
+2. Start the Streamlit frontend:
+   ```bash
+   cd frontend
+   streamlit run streamlit_app.py
+   ```
 
-#### Agentic Patterns (`agentic_patterns/`)
-- Implementation of various AI agent patterns
-- Agent orchestration examples
+3. Access the applications:
+   - Backend API: http://localhost:8000/docs
+   - Frontend: http://localhost:8501
 
-#### Chat Completions (`chat_completions/`)
-- OpenAI integration
-- Groq implementation
-- Other LLM providers
+## Development
 
-#### Function Calling (`function_calling/`)
-- Examples of function calling with LLMs
-- Real-world use cases
+### API Documentation
 
-#### Hugging Face Integration (`huggingface/`)
-- Model usage examples
-- Inference API implementations
+The API documentation is available at `/docs` when the server is running. It includes all endpoints with request/response models and examples.
 
-#### Additional Components
-- `agents/`: Various agent implementations
-- `presentation_generator/`: Automated presentation creation
-- `notion_data_integration/`: Notion API integration examples
-- `api/`: FastAPI-based endpoints
-- `auth/`: Authentication implementations
-- `langchain/`: LangChain usage examples
+### Project Principles
 
-## Usage
+This project follows these key principles:
 
-Each directory contains specific examples and implementations. Refer to individual README files within each directory for detailed usage instructions.
-
-## Additional Resources
-
-- Check the `prompts/` directory for various prompt engineering examples
-- See `llm_workflows/README.md` for detailed workflow patterns
-- Explore individual directories for specific implementation details
-
-## Environment Variables
-
-Required environment variables (add to `.env`):
-- OpenAI API keys
-- Hugging Face API tokens
-- Other provider credentials as needed
-
-## Contributing
-
-Feel free to contribute by:
-1. Forking the repository
-2. Creating a feature branch
-3. Submitting a pull request
+1. **Domain-driven design**: Modeling based on the business domain
+2. **Single responsibility**: Each component has a clear and focused purpose
+3. **Type safety**: Using Pydantic models and type annotations
+4. **Separation of concerns**: Repository for data access, services for business logic
+5. **Async-first**: Non-blocking IO for better performance
 
 ## License
 
-This project is licensed under the terms specified in the LICENSE file.
+MIT
