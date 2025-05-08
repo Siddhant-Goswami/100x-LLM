@@ -3,7 +3,7 @@ import requests
 from typing import List, Optional
 
 # API base URL
-BASE_URL = "https://geeksiddhant-enrollmentapi.hf.space"
+BASE_URL = "http://localhost:8000"
 
 # Initialize session state for customers list
 if 'customers' not in st.session_state:
