@@ -6,8 +6,14 @@ import requests
 import json
 import os
 from enum import Enum
+import csv
+import pathlib
+from fastapi.encoders import jsonable_encoder
 
 app = FastAPI()
+
+# Define the CSV file path
+CSV_FILE = "ai_crm/customers.csv"
 
 class Status(str, Enum):
     QUALIFIED = "Qualified"
@@ -36,9 +42,79 @@ class Customer(BaseModel):
     reasoning: Optional[str] = None
     status: Optional[Status] = None
 
+# CSV Database functions
+def ensure_csv_exists():
+    """Create the CSV file if it doesn't exist"""
+    csv_path = pathlib.Path(CSV_FILE)
+    if not csv_path.parent.exists():
+        csv_path.parent.mkdir(parents=True)
+    
+    if not csv_path.exists():
+        fieldnames = [field for field in Customer.__annotations__]
+        with open(CSV_FILE, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+
+def read_customers_from_csv() -> List[Customer]:
+    """Read customers from CSV file"""
+    ensure_csv_exists()
+    customers = []
+    
+    with open(CSV_FILE, 'r', newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            # Handle empty strings and convert to appropriate types
+            
+            # Set empty strings to None for various fields
+            for field in row:
+                if row[field] == '':
+                    row[field] = None
+            
+            # Convert numeric and boolean fields
+            if row['id'] is not None:
+                row['id'] = int(row['id'])
+            
+            if row['asked_q'] is not None:
+                row['asked_q'] = row['asked_q'].lower() == 'true'
+            
+            if row['referred'] is not None:
+                row['referred'] = row['referred'].lower() == 'true'
+            
+            if row['past_touchpoints'] is not None:
+                row['past_touchpoints'] = int(row['past_touchpoints'])
+            
+            if row['engaged_mins'] is not None:
+                row['engaged_mins'] = float(row['engaged_mins'])
+            
+            if row['score'] is not None:
+                row['score'] = float(row['score'])
+                
+            if row['webinar_join'] is not None:
+                row['webinar_join'] = datetime.fromisoformat(row['webinar_join'])
+                
+            if row['webinar_leave'] is not None:
+                row['webinar_leave'] = datetime.fromisoformat(row['webinar_leave'])
+                
+            customers.append(Customer(**row))
+    
+    return customers
+
+def write_customers_to_csv(customers: List[Customer]):
+    """Write customers to CSV file"""
+    ensure_csv_exists()
+    
+    with open(CSV_FILE, 'w', newline='') as csvfile:
+        fieldnames = [field for field in Customer.__annotations__]
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        
+        for customer in customers:
+            # Convert customer model to dict and ensure all values are string-serializable
+            customer_dict = jsonable_encoder(customer)
+            writer.writerow(customer_dict)
+
 # 2. Create the API endpoint
 
-customers_list = []
 #Create
 @app.post("/customers", response_model=Customer)
 def create_customer(customer: Customer):
@@ -46,8 +122,19 @@ def create_customer(customer: Customer):
     if not customer.engaged_mins and customer.webinar_join and customer.webinar_leave:
         customer.engaged_mins = calculate_engaged_minutes(customer)
     
-    # Add customer to the list first
+    # Read existing customers
+    customers_list = read_customers_from_csv()
+    
+    # Check if ID already exists
+    for existing_customer in customers_list:
+        if existing_customer.id == customer.id:
+            raise HTTPException(status_code=400, detail="Customer with this ID already exists")
+    
+    # Add customer to the list
     customers_list.append(customer)
+    
+    # Write back to CSV
+    write_customers_to_csv(customers_list)
     
     # Then qualify the customer
     return qualify_customer(customer.id)
@@ -55,24 +142,32 @@ def create_customer(customer: Customer):
 #Read
 @app.get("/customers", response_model=List[Customer])
 def get_customers():
-    return customers_list
+    return read_customers_from_csv()
 
 #Update
 @app.put("/customers/{id}", response_model=Customer)
 def update_customer(id: int, customer: Customer):
+    customers_list = read_customers_from_csv()
+    
     for i, existing_customer in enumerate(customers_list):
         if existing_customer.id == id:
             customers_list[i] = customer
+            write_customers_to_csv(customers_list)
             return customer
+    
     raise HTTPException(status_code=404, detail="Customer not found")
 
 #Delete
 @app.delete("/customers/{id}", response_model=Customer)
 def delete_customer(id: int):
+    customers_list = read_customers_from_csv()
+    
     for i, customer in enumerate(customers_list):
         if customer.id == id:
             deleted_customer = customers_list.pop(i)
+            write_customers_to_csv(customers_list)
             return deleted_customer
+    
     raise HTTPException(status_code=404, detail="Customer not found")
 
 # 3. Lead Qualification Engine
@@ -267,6 +362,8 @@ def simplified_scoring(customer: Dict[str, Any]) -> Dict[str, Any]:
 @app.post("/customers/{id}/qualify", response_model=Customer)
 def qualify_customer(id: int):
     """Qualify a customer as a lead"""
+    customers_list = read_customers_from_csv()
+    
     for i, customer in enumerate(customers_list):
         if customer.id == id:
             # Calculate engaged minutes if not already calculated
@@ -288,6 +385,10 @@ def qualify_customer(id: int):
             customer.score = qualification.get("score")
             customer.reasoning = qualification.get("reasoning")
             customer.status = qualification.get("status")
+            
+            # Save updated customer to CSV
+            customers_list[i] = customer
+            write_customers_to_csv(customers_list)
             
             return customer
     
