@@ -133,3 +133,4 @@ wrapt==1.16.0
 xxhash==3.4.1
 yarl==1.9.4
 yfinance==0.2.38
+supabase>=2.0.0
