@@ -1,13 +1,36 @@
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Header
 from datetime import datetime
 import requests
 import json
 import os
 from enum import Enum
+from supabase import create_client, Client
+from dotenv import load_dotenv
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
+# Load environment variables
+load_dotenv()
+
+# Initialize Supabase client
+supabase: Client = create_client(
+    os.getenv("SUPABASE_URL", ""),
+    os.getenv("SUPABASE_KEY", "")
+)
 
 app = FastAPI()
+security = HTTPBearer()
+
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    try:
+        # Verify the JWT token with Supabase
+        user = supabase.auth.get_user(credentials.credentials)
+        if not user:
+            raise HTTPException(status_code=401, detail="Invalid authentication credentials")
+        return user
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid authentication credentials")
 
 class Status(str, Enum):
     QUALIFIED = "Qualified"
@@ -36,44 +59,63 @@ class Customer(BaseModel):
     reasoning: Optional[str] = None
     status: Optional[Status] = None
 
-# 2. Create the API endpoint
-
-customers_list = []
 #Create
 @app.post("/customers", response_model=Customer)
-def create_customer(customer: Customer):
+async def create_customer(customer: Customer, current_user = Depends(get_current_user)):
     # Calculate engaged minutes if not already calculated
     if not customer.engaged_mins and customer.webinar_join and customer.webinar_leave:
         customer.engaged_mins = calculate_engaged_minutes(customer)
     
-    # Add customer to the list first
-    customers_list.append(customer)
+    # Convert customer to dict for Supabase
+    customer_dict = customer.model_dump()
+    
+    # Format datetime objects for JSON
+    for key in ["webinar_join", "webinar_leave"]:
+        if customer_dict.get(key):
+            customer_dict[key] = customer_dict[key].isoformat()
+    
+    # Insert into Supabase
+    result = supabase.table("customers").insert(customer_dict).execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to create customer")
     
     # Then qualify the customer
     return qualify_customer(customer.id)
 
 #Read
 @app.get("/customers", response_model=List[Customer])
-def get_customers():
-    return customers_list
+async def get_customers(current_user = Depends(get_current_user)):
+    result = supabase.table("customers").select("*").execute()
+    return result.data
 
 #Update
 @app.put("/customers/{id}", response_model=Customer)
-def update_customer(id: int, customer: Customer):
-    for i, existing_customer in enumerate(customers_list):
-        if existing_customer.id == id:
-            customers_list[i] = customer
-            return customer
-    raise HTTPException(status_code=404, detail="Customer not found")
+async def update_customer(id: int, customer: Customer, current_user = Depends(get_current_user)):
+    # Convert customer to dict for Supabase
+    customer_dict = customer.model_dump()
+    
+    # Format datetime objects for JSON
+    for key in ["webinar_join", "webinar_leave"]:
+        if customer_dict.get(key):
+            customer_dict[key] = customer_dict[key].isoformat()
+    
+    result = supabase.table("customers").update(customer_dict).eq("id", id).execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return result.data[0]
 
 #Delete
 @app.delete("/customers/{id}", response_model=Customer)
-def delete_customer(id: int):
-    for i, customer in enumerate(customers_list):
-        if customer.id == id:
-            deleted_customer = customers_list.pop(i)
-            return deleted_customer
-    raise HTTPException(status_code=404, detail="Customer not found")
+async def delete_customer(id: int, current_user = Depends(get_current_user)):
+    result = supabase.table("customers").delete().eq("id", id).execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    return result.data[0]
 
 # 3. Lead Qualification Engine
 
@@ -265,31 +307,73 @@ def simplified_scoring(customer: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 @app.post("/customers/{id}/qualify", response_model=Customer)
-def qualify_customer(id: int):
+async def qualify_customer(id: int, current_user = Depends(get_current_user)):
     """Qualify a customer as a lead"""
-    for i, customer in enumerate(customers_list):
-        if customer.id == id:
-            # Calculate engaged minutes if not already calculated
-            if not customer.engaged_mins and customer.webinar_join and customer.webinar_leave:
-                customer.engaged_mins = calculate_engaged_minutes(customer)
-            
-            # Convert to dict for processing
-            customer_dict = customer.dict()
-            
-            # Format datetime objects for JSON
-            for key in ["webinar_join", "webinar_leave"]:
-                if customer_dict.get(key):
-                    customer_dict[key] = customer_dict[key].isoformat()
-            
-            # Get qualification result from LLM
-            qualification = qualify_lead_with_llm(customer_dict)
-            
-            # Update customer with qualification results
-            customer.score = qualification.get("score")
-            customer.reasoning = qualification.get("reasoning")
-            customer.status = qualification.get("status")
-            
-            return customer
+    # Get customer from Supabase
+    result = supabase.table("customers").select("*").eq("id", id).execute()
     
-    raise HTTPException(status_code=404, detail="Customer not found")
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    
+    customer_data = result.data[0]
+    
+    # Calculate engaged minutes if not already calculated
+    if not customer_data.get("engaged_mins") and customer_data.get("webinar_join") and customer_data.get("webinar_leave"):
+        customer_data["engaged_mins"] = calculate_engaged_minutes(Customer(**customer_data))
+    
+    # Get qualification result from LLM
+    qualification = qualify_lead_with_llm(customer_data)
+    
+    # Update customer with qualification results
+    update_data = {
+        "score": qualification.get("score"),
+        "reasoning": qualification.get("reasoning"),
+        "status": qualification.get("status")
+    }
+    
+    result = supabase.table("customers").update(update_data).eq("id", id).execute()
+    
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to update customer qualification")
+    
+    return Customer(**result.data[0])
+
+# Add authentication endpoints
+class AuthRequest(BaseModel):
+    email: str
+    password: str
+
+@app.post("/auth/signup")
+async def signup(auth_data: AuthRequest):
+    try:
+        response = supabase.auth.sign_up({
+            "email": auth_data.email,
+            "password": auth_data.password
+        })
+        return {"message": "Signup successful", "user": response.user}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.post("/auth/login")
+async def login(auth_data: AuthRequest):
+    try:
+        response = supabase.auth.sign_in_with_password({
+            "email": auth_data.email,
+            "password": auth_data.password
+        })
+        return {
+            "message": "Login successful",
+            "access_token": response.session.access_token,
+            "user": response.user
+        }
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+@app.post("/auth/logout")
+async def logout(current_user = Depends(get_current_user)):
+    try:
+        supabase.auth.sign_out()
+        return {"message": "Logout successful"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
