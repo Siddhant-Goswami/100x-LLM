@@ -67,9 +67,11 @@ def main():
     query = "What was Studio Ghibli's first film?"
     wiki_title = "Hayao_Miyazaki"
     
+    #Loading Data
     print(f"\nFetching Wikipedia content for: {wiki_title}")
     paragraphs = load_wikipedia_content(wiki_title)
     
+    #Query
     print("\nFinding most relevant paragraphs...")
     most_similar_paragraphs = get_most_similar_paragraphs(query, paragraphs, model)
     
@@ -79,6 +81,7 @@ def main():
     # Combine paragraphs into context
     context = "\n\n".join(most_similar_paragraphs)
     
+    #Generation
     print("\nGenerating answer...")
     answer = generate_answer(context, query, client)
     
