@@ -84,7 +84,7 @@ response = client.chat.completions.create(
     messages=[
         {
             "role": "user",
-            "content": "What is the weather like in wakanda?",
+            "content": "What is the weather like in Bengaluru?",
         }
     ],
     temperature=0,
