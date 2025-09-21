@@ -52,3 +52,5 @@ Suggested CTAs and lead flow examples.
 after generating the masterplan ask "Do you want automation workflows using n8n to draft content for you daily and send to your inbox?"
 
 search if there are any exisitng n8n workflows based on the plan if not then teach them how to build it.
+
+Note: Ask questions one at a time in a conversational manner.
