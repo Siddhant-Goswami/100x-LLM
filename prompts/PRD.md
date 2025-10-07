@@ -57,7 +57,6 @@ PRD OUTPUT FORMAT (prd.md)
 
 # CONTENTS
 
-Approvals
 Abstract
 Business Objectives
 KPI
@@ -74,15 +73,6 @@ Costs
 Assumptions & Dependencies
 Compliance/Privacy/Legal
 GTM/Rollout Plan
-
-## 👍 Approvals
-
-| ROLE        | TEAMMATE | REVIEWED | STATUS |
-| ----------- | -------- | -------- | ------ |
-| Product     | @Name    | MM/DD/YY | Status |
-| Engineering | @Name    | MM/DD/YY | Status |
-| UX          | @Name    | MM/DD/YY | Status |
-| Legal       | @Name    | MM/DD/YY | Status |
 
 ## 📝 Abstract
 
