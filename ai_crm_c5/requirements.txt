@@ -1,0 +1,9 @@
+gradio==4.44.0
+pandas==2.1.4
+sqlite3
+sentence-transformers==2.2.2
+numpy==1.24.3
+pyyaml==6.0.1
+bcrypt==4.1.2
+python-dateutil==2.8.2
+plotly==5.17.0

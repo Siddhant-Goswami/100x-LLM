@@ -1,0 +1,7 @@
+# Supabase Configuration
+SUPABASE_URL=your_supabase_project_url
+SUPABASE_KEY=your_supabase_anon_key
+
+# Optional: Groq API for lead qualification
+GROQ_API_KEY=your_groq_api_key
+
