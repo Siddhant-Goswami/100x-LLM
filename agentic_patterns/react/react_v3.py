@@ -1,9 +1,28 @@
+"""
+ReAct Agent Implementation with Web Search
+
+Requirements:
+1. Set GROQ_API_KEY environment variable with your Groq API key
+2. Set SERPAPI_API_KEY environment variable with your SerpAPI key
+3. Install required packages: pip install groq serpapi
+
+Usage:
+export GROQ_API_KEY="your_groq_api_key_here"
+export SERPAPI_API_KEY="your_serpapi_key_here"
+python react_v3.py
+"""
+
 import os
 import json
 from groq import Groq
-from serpapi import GoogleSearch
+from serpapi import Client
+from dotenv import load_dotenv
 
-serpapi_key = os.environ.get("SERPER_API_KEY")
+# Load environment variables from .env file
+load_dotenv()
+
+serpapi_key = os.environ.get("SERPAPI_API_KEY")
+groq_key = os.environ.get("GROQ_API_KEY")
 
 def react_agent(question, max_iterations=5):
     """
@@ -87,8 +106,12 @@ def generate_thought_and_action(question, context):
         }
     ]
 
+    # Check if Groq API key is available
+    if not groq_key:
+        raise ValueError("GROQ_API_KEY environment variable not set. Please set your Groq API key.")
+    
     # Make an API call to Groq to generate the next thought and action
-    client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+    client = Groq(api_key=groq_key)
 
     response = client.chat.completions.create(
         messages=[{"role": "user", "content": prompt}],
@@ -138,24 +161,54 @@ def web_search(query):
     :param query: The search query
     :return: A string containing the top search results
     """
-    # Set up the parameters for the SerpAPI search
-    params = {
-        "engine": "google",
-        "q": query,
-        "api_key": serpapi_key
-    }
+    # Check if API key is available
+    if not serpapi_key:
+        return "Error: SERPAPI_API_KEY environment variable not set. Please set your SerpAPI key."
     
-    # Perform the search
-    search = GoogleSearch(params)
-    results = search.get_dict()
+    try:
+        # Set up the parameters for the SerpAPI search
+        params = {
+            "engine": "google",
+            "q": query
+        }
+        
+        # Perform the search
+        client = Client(api_key=serpapi_key)
+        results = client.search(params)
+        
+        # Extract and format the top 3 results
+        if "organic_results" in results:
+            top_results = results["organic_results"][:3]
+            return "\n\n".join([f"Title: {r['title']}\nSnippet: {r['snippet']}" for r in top_results])
+        else:
+            return "No results found."
     
-    # Extract and format the top 3 results
-    if "organic_results" in results:
-        top_results = results["organic_results"][:3]
-        return "\n\n".join([f"Title: {r['title']}\nSnippet: {r['snippet']}" for r in top_results])
-    else:
-        return "No results found."
+    except Exception as e:
+        return f"Error performing search: {str(e)}. Please check your SerpAPI key and try again."
 
-question = "What is the population of India?"
-answer = react_agent(question)
-print(f"Final Answer: {answer}")
+def main():
+    """Main function to run the ReAct agent with proper error handling."""
+    # Check if all required environment variables are set
+    if not groq_key:
+        print("Error: GROQ_API_KEY environment variable not set.")
+        print("Please set it with: export GROQ_API_KEY='your_groq_api_key_here'")
+        return
+    
+    if not serpapi_key:
+        print("Error: SERPAPI_API_KEY environment variable not set.")
+        print("Please set it with: export SERPAPI_API_KEY='your_serpapi_key_here'")
+        return
+    
+    question = "What is the population of India?"
+    print(f"Question: {question}")
+    print("=" * 50)
+    
+    try:
+        answer = react_agent(question)
+        print("=" * 50)
+        print(f"Final Answer: {answer}")
+    except Exception as e:
+        print(f"Error running ReAct agent: {str(e)}")
+
+if __name__ == "__main__":
+    main()

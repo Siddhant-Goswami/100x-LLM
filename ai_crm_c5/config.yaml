@@ -1,0 +1,72 @@
+# Lead Qualification Configuration
+qualification:
+  # Scoring thresholds
+  pursue_threshold: 65
+  review_threshold: 50
+  
+  # Factor weights (must sum to 1.0)
+  factor_weights:
+    intent_score: 0.3
+    fit_score: 0.25
+    ability_to_pay: 0.2
+    completion_score: 0.15
+    priority_bonus: 0.1
+  
+  # Hard fail rules
+  hard_fails:
+    missing_contact: true
+    irrelevant_program: true
+    budget_below_minimum: 5000
+    disallowed_regions: ["test", "invalid"]
+  
+  # Priority flags
+  priority_flags:
+    alumni_referral: 10
+    strong_program_match: 8
+    prior_engagement: 5
+
+# Programs configuration
+programs:
+  - name: "Data Science Bootcamp"
+    min_budget: 8000
+    target_roles: ["data scientist", "analyst", "engineer"]
+    min_experience: 1
+  - name: "Web Development"
+    min_budget: 6000
+    target_roles: ["developer", "engineer", "programmer"]
+    min_experience: 0
+  - name: "Product Management"
+    min_budget: 10000
+    target_roles: ["product manager", "pm", "product owner"]
+    min_experience: 2
+
+# Intent seed phrases for similarity scoring
+intent_seeds:
+  positive:
+    - "ready to start immediately"
+    - "looking for career change"
+    - "serious about learning"
+    - "have budget approved"
+    - "want to advance my career"
+    - "excited about the program"
+    - "ready to commit"
+  negative:
+    - "just browsing"
+    - "not sure yet"
+    - "maybe later"
+    - "just curious"
+    - "don't have time"
+    - "too expensive"
+
+# System settings
+system:
+  max_login_attempts: 5
+  session_timeout_minutes: 60
+  csv_max_rows: 1000
+  kpi_days: 7
+
+
+
+
+
+
