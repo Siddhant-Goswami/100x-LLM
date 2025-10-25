@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from notion_client import Client
+import streamlit as st
+
 load_dotenv()
 
 notion = Client(auth=os.getenv("NOTION_API_KEY"))
@@ -14,9 +16,6 @@ response_body = notion.blocks.children.list(
 )
 
 print(response_body)
-
-import streamlit as st
-
 
 st.title(response['properties']['title']['title'][0]['plain_text'])
 
