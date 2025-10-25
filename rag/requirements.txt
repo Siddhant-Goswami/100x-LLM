@@ -1,0 +1,20 @@
+# Core ML and NLP dependencies
+torch
+torchvision
+transformers
+sentence-transformers
+accelerate
+huggingface-hub
+
+# Data processing
+numpy
+scikit-learn
+
+# API and web dependencies
+groq
+wikipedia-api
+python-dotenv
+requests
+
+# Optional: For better performance
+scipy

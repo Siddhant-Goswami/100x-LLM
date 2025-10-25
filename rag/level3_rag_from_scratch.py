@@ -3,7 +3,7 @@ from sentence_transformers import SentenceTransformer
 from wikipediaapi import Wikipedia
 import textwrap
 import numpy as np
-from openai import OpenAI
+from groq import Groq
 from dotenv import load_dotenv
 
 def load_wikipedia_content(title):
@@ -34,17 +34,16 @@ def get_most_similar_paragraphs(query, paragraphs, model, top_k=3):
     return [paragraphs[idx] for idx in top_k_idx]
 
 def generate_answer(context, query, client):
-    """Generate answer using OpenAI"""
+    """Generate answer using Groq"""
     prompt = f"""
-    Use the following CONTEXT to answer the QUESTION at the end.
-    If you don't know the answer, just say that you don't know, don't try to make up an answer.
+    You are a philoshoper and life coach. Use the following CONTEXT to answer the QUESTION at the end.
 
     CONTEXT: {context}
     QUESTION: {query}
     """
     
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",  # You can change this to gpt-4 if needed
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "user", "content": prompt},
         ]
@@ -53,23 +52,22 @@ def generate_answer(context, query, client):
     return response.choices[0].message.content
 
 def main():
-    # Load environment variables
     load_dotenv()
     
     # Initialize the embedding model
     print("Loading embedding model...")
-    model = SentenceTransformer("Alibaba-NLP/gte-base-en-v1.5", trust_remote_code=True)
+    model = SentenceTransformer("all-MiniLM-L6-v2")
     
-    # Initialize OpenAI client
-    client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    # Initialize LLM client
+    client = Groq(api_key=os.getenv('GROQ_API_KEY'))
     
-    # Example query and Wikipedia page
+    # Define user query and data source
     query = "What was Studio Ghibli's first film?"
-    wiki_title = "Hayao_Miyazaki"
+    wiki_page_title = "Hayao_Miyazaki"
     
     #Loading Data
-    print(f"\nFetching Wikipedia content for: {wiki_title}")
-    paragraphs = load_wikipedia_content(wiki_title)
+    print(f"\nFetching Wikipedia content for: {wiki_page_title}")
+    paragraphs = load_wikipedia_content(wiki_page_title)
     
     #Query
     print("\nFinding most relevant paragraphs...")
