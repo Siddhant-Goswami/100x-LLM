@@ -13,7 +13,7 @@ client = Groq(
 )
 
 
-# 1. Define Function to fetch context
+# 2. Define Function to fetch context
 
 # Get the current weather
 def get_current_weather(location):
@@ -57,17 +57,15 @@ tools = [
 ]
 
 
-
+#LLM
 response = client.chat.completions.create(
-    model="llama3-70b-8192",
+    model="openai/gpt-oss-20b",
     messages=[
         {
             "role": "user",
             "content": "What is the weather like in Bengaluru?",
         }
     ],
-    temperature=0,
-    max_tokens=300,
     tools=tools,
     tool_choice="auto"
 )
