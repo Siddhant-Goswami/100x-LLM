@@ -52,6 +52,7 @@ htmlcov/
 llm-100x
 llm
 autogen_env
+rag_env
 
 credentials.json
 token.pickle
