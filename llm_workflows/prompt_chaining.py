@@ -54,7 +54,7 @@ def get_completion(prompt: str) -> str:
     Get completion from Groq API
     """
     completion = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="openai/gpt-oss-20b",
         messages=[
             {"role": "user", "content": prompt}
         ]
