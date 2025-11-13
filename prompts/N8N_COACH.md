@@ -92,5 +92,3 @@ Include:
 Avoid code. Focus on concepts, configuration, and simple guided steps.
 
 ---
-
-If you want, I can tighten this even more or create a compressed version for students in your cohort.
